@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tableau de Bord - {{ membre.user.get_full_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Informations du profil -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    {% if membre.photo %}
+                    <img src="{{ membre.photo.url }}" alt="{{ membre.user.get_full_name }}" 
+                         class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3" 
+                         style="width: 150px; height: 150px;">
+                        <i class="fas fa-user fa-4x text-muted"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <h4 class="mb-1">{{ membre.user.get_full_name }}</h4>
+                    <p class="text-muted mb-3">Membre depuis {{ membre.date_inscription|date:"d/m/Y" }}</p>
+                    
+                    <div class="d-grid">
+                        <a href="{% url 'membres:modifier_membre' membre.id %}" class="btn btn-primary">
+                            <i class="fas fa-edit me-2"></i>Modifier mon profil
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Informations personnelles</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="fas fa-envelope text-primary me-2"></i>
+                            {{ membre.user.email }}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone text-primary me-2"></i>
+                            {{ membre.telephone }}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                            {{ membre.adresse }}
+                        </li>
+                        <li>
+                            <i class="fas fa-birthday-cake text-primary me-2"></i>
+                            {{ membre.date_naissance|date:"d/m/Y" }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Activités et inscriptions -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Mes inscriptions</h5>
+                    <a href="{% url 'activites:liste_activites' %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus me-2"></i>Nouvelle inscription
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if inscriptions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Activité</th>
+                                    <th>Date d'inscription</th>
+                                    <th>Date de fin</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for inscription in inscriptions %}
+                                <tr>
+                                    <td>{{ inscription.sport.nom }}</td>
+                                    <td>{{ inscription.date_inscription|date:"d/m/Y" }}</td>
+                                    <td>{{ inscription.date_fin|date:"d/m/Y" }}</td>
+                                    <td>
+                                        <span class="badge {% if inscription.active %}bg-success{% else %}bg-danger{% endif %}">
+                                            {% if inscription.active %}Active{% else %}Expirée{% endif %}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'activites:detail_activite' inscription.sport.id %}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-info-circle fa-3x text-muted mb-3"></i>
+                        <p class="mb-0">Vous n'êtes inscrit à aucune activité pour le moment.</p>
+                        <a href="{% url 'activites:liste_activites' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus me-2"></i>Découvrir les activités
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Prochaines séances -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Prochaines séances</h5>
+                </div>
+                <div class="card-body">
+                    {% if inscriptions %}
+                    <div class="list-group">
+                        {% for inscription in inscriptions %}
+                            {% if inscription.active %}
+                                {% for seance in inscription.sport.seances.all %}
+                                    {% if seance.date >= now %}
+                                    <div class="list-group-item">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">{{ inscription.sport.nom }}</h6>
+                                            <small>{{ seance.date|date:"d/m/Y" }} à {{ seance.heure_debut|time:"H:i" }}</small>
+                                        </div>
+                                        <p class="mb-1">Instructeur : {{ seance.instructeur.get_full_name }}</p>
+                                        <small class="text-muted">
+                                            <i class="fas fa-map-marker-alt me-1"></i>{{ seance.salle.nom }}
+                                        </small>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
+                        <p class="mb-0">Aucune séance planifiée.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    padding: 1rem 1.25rem;
+}
+
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    padding: 1rem;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+}
+
+.badge {
+    padding: 0.5em 0.75em;
+}
+</style>
+{% endblock %} 

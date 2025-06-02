@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Liste des Activités{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Liste des Activités</h2>
+            <p class="text-muted">Découvrez toutes nos activités sportives disponibles</p>
+        </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="niveau" class="form-label">Niveau</label>
+                            <select class="form-select" id="niveau" name="niveau">
+                                <option value="">Tous les niveaux</option>
+                                {% for niveau in niveaux %}
+                                <option value="{{ niveau.id }}">{{ niveau.nom }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="prix_max" class="form-label">Prix maximum</label>
+                            <input type="number" class="form-control" id="prix_max" name="prix_max" min="0" step="0.01">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="jour" class="form-label">Jour</label>
+                            <select class="form-select" id="jour" name="jour">
+                                <option value="">Tous les jours</option>
+                                {% for code, nom in jours %}
+                                <option value="{{ code }}">{{ nom }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-filter me-2"></i>Filtrer
+                            </button>
+                            <a href="{% url 'liste_activites' %}" class="btn btn-secondary">
+                                <i class="fas fa-redo me-2"></i>Réinitialiser
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des activités -->
+    <div class="row">
+        {% for sport in sports %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if sport.image %}
+                <img src="{{ sport.image.url }}" class="card-img-top" alt="{{ sport.nom }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-dumbbell fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ sport.nom }}</h5>
+                    <p class="card-text">{{ sport.description|truncatewords:30 }}</p>
+                    
+                    <div class="mb-3">
+                        <h6>Informations :</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Niveau requis :</strong> {{ sport.niveau_requis.nom }}</li>
+                            <li><strong>Prix :</strong> {{ sport.prix }} €</li>
+                            <li><strong>Durée :</strong> {{ sport.duree_seance }} minutes</li>
+                            <li><strong>Capacité :</strong> {{ sport.capacite_max }} personnes</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6>Horaires :</h6>
+                        <ul class="list-unstyled">
+                            {% for horaire in horaires %}
+                                {% if horaire.sport == sport %}
+                                <li>
+                                    <i class="fas fa-clock me-2"></i>
+                                    {{ horaire.get_jour_display }} : {{ horaire.heure_debut|time:"H:i" }} - {{ horaire.heure_fin|time:"H:i" }}
+                                    <br>
+                                    <small class="text-muted">Salle : {{ horaire.salle.nom }}</small>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    {% if sport.id in sports_inscrits %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>Vous êtes déjà inscrit à cette activité
+                    </div>
+                    {% else %}
+                    <a href="{% url 's_inscrire_activite' sport.id %}" class="btn btn-success w-100">
+                        <i class="fas fa-plus-circle me-2"></i>S'inscrire
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>Aucune activité disponible pour le moment.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Détails du Membre - {{ membre.prenom }} {{ membre.nom }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                {% if membre.photo %}
+                    <img src="{{ membre.photo.url }}" class="card-img-top" alt="{{ membre.nom }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/300x400" class="card-img-top" alt="Photo par défaut">
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title">{{ membre.prenom }} {{ membre.nom }}</h1>
+                    <div class="mb-4">
+                        <h4>Informations personnelles</h4>
+                        <p><strong>Numéro de carte:</strong> {{ membre.numero_carte }}</p>
+                        <p><strong>Date de naissance:</strong> {{ membre.date_naissance|date:"d/m/Y" }}</p>
+                        <p><strong>Genre:</strong> {{ membre.get_genre_display }}</p>
+                        <p><strong>Téléphone:</strong> {{ membre.telephone }}</p>
+                        <p><strong>Adresse:</strong> {{ membre.adresse }}</p>
+                        <p><strong>Date d'inscription:</strong> {{ membre.date_inscription|date:"d/m/Y" }}</p>
+                    </div>
+
+                    <div class="btn-group">
+                        <a href="{% url 'membres:modifier_membre' membre.pk %}" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Modifier
+                        </a>
+                        <a href="{% url 'membres:supprimer_membre' membre.pk %}" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </a>
+                        <a href="{% url 'membres:liste_membres' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour à la liste
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

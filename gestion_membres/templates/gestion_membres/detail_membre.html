@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2>Détails du Membre</h2>
+            <div>
+                <a href="{% url 'membres:modifier_membre' membre.id %}" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+                <a href="{% url 'membres:supprimer_membre' membre.id %}" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Supprimer
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Informations personnelles</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Nom complet</th>
+                            <td>{{ membre.user.get_full_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td>{{ membre.user.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Téléphone</th>
+                            <td>{{ membre.telephone }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date de naissance</th>
+                            <td>{{ membre.date_naissance|date:"d/m/Y" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Adresse</th>
+                            <td>{{ membre.adresse }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date d'inscription</th>
+                            <td>{{ membre.date_inscription|date:"d/m/Y H:i" }}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <h4>Inscriptions aux activités</h4>
+                    {% if inscriptions %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Sport</th>
+                                <th>Date d'inscription</th>
+                                <th>Date de fin</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for inscription in inscriptions %}
+                            <tr>
+                                <td>{{ inscription.sport.nom }}</td>
+                                <td>{{ inscription.date_inscription|date:"d/m/Y" }}</td>
+                                <td>{{ inscription.date_fin|date:"d/m/Y" }}</td>
+                                <td>
+                                    {% if inscription.active %}
+                                    <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Expirée</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="text-muted">Aucune inscription aux activités</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'membres:liste_membres' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

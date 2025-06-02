@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Liste des Réservations</h2>
+        <a href="#" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Nouvelle réservation
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Membre</th>
+                            <th>Activité</th>
+                            <th>Date</th>
+                            <th>Heure</th>
+                            <th>Statut</th>
+                            <th>Présence</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in reservations %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">{{ reservation.membre.get_full_name }}</h6>
+                                        <small class="text-muted">{{ reservation.membre.email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ reservation.seance.sport.nom }}</td>
+                            <td>{{ reservation.seance.date|date:"d/m/Y" }}</td>
+                            <td>{{ reservation.seance.heure_debut|time:"H:i" }} - {{ reservation.seance.heure_fin|time:"H:i" }}</td>
+                            <td>
+                                <span class="badge {% if reservation.statut == 'CONFIRMEE' %}bg-success
+                                                  {% elif reservation.statut == 'ANNULEE' %}bg-danger
+                                                  {% elif reservation.statut == 'TERMINEE' %}bg-info
+                                                  {% else %}bg-warning{% endif %}">
+                                    {{ reservation.get_statut_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge {% if reservation.present %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {% if reservation.present %}Présent{% else %}Absent{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="#" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4">
+                                <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                                <p class="mb-0">Aucune réservation disponible.</p>
+                                <a href="#" class="btn btn-primary mt-3">
+                                    <i class="fas fa-plus me-2"></i>Créer une réservation
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

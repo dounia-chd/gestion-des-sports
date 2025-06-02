@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Accueil - Gestion Sportive{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Bienvenue sur la Gestion Sportive</h1>
+            <p class="lead mb-5">Gérez vos activités sportives en toute simplicité</p>
+            
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-user fa-3x text-primary mb-3"></i>
+                            <h3>Espace Client</h3>
+                            <p>Accédez à votre espace personnel pour gérer vos inscriptions et suivre vos activités.</p>
+                            <a href="{% url 'client_login' %}" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-user-shield fa-3x text-danger mb-3"></i>
+                            <h3>Espace Administrateur</h3>
+                            <p>Gérez les activités, les membres et les ressources de votre centre sportif.</p>
+                            <a href="{% url 'admin_login' %}" class="btn btn-danger">
+                                <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5">
+                <h2 class="mb-4">Nos Services</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-dumbbell fa-2x text-primary mb-3"></i>
+                                <h4>Activités Sportives</h4>
+                                <p>Large choix d'activités adaptées à tous les niveaux</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-user-friends fa-2x text-success mb-3"></i>
+                                <h4>Coachs Qualifiés</h4>
+                                <p>Encadrement professionnel pour tous les sports</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-calendar-alt fa-2x text-info mb-3"></i>
+                                <h4>Planning Flexible</h4>
+                                <p>Horaires adaptés à vos disponibilités</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+}
+
+.fa-3x {
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}

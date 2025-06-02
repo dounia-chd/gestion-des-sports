@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Liste des Membres</h2>
+    
+    <!-- Barre de recherche -->
+    <form method="get" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Rechercher un membre..." value="{{ query }}">
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </div>
+    </form>
+
+    <!-- Bouton Ajouter -->
+    <a href="{% url 'membres:creer_membre' %}" class="btn btn-success mb-3">
+        <i class="fas fa-plus"></i> Ajouter un membre
+    </a>
+
+    <!-- Liste des membres -->
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Téléphone</th>
+                    <th>Date d'inscription</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for membre in membres %}
+                <tr>
+                    <td>{{ membre.user.get_full_name }}</td>
+                    <td>{{ membre.telephone }}</td>
+                    <td>{{ membre.date_inscription|date:"d/m/Y" }}</td>
+                    <td>
+                        <a href="{% url 'membres:detail_membre' membre.id %}" class="btn btn-info btn-sm">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{% url 'membres:modifier_membre' membre.id %}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'membres:supprimer_membre' membre.id %}" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">Aucun membre trouvé</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if membres.has_other_pages %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if membres.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ membres.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Précédent</a>
+            </li>
+            {% endif %}
+
+            {% for num in membres.paginator.page_range %}
+            <li class="page-item {% if membres.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}">{{ num }}</a>
+            </li>
+            {% endfor %}
+
+            {% if membres.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ membres.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Suivant</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %} 

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Liste des Coachs{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Liste des Coachs</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Spécialité</th>
+                            <th>Sports</th>
+                            <th>Téléphone</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for coach in coachs %}
+                        <tr>
+                            <td>{{ coach.user.get_full_name|default:coach.user.username }}</td>
+                            <td>{{ coach.specialite }}</td>
+                            <td>
+                                {% for sport in coach.sports.all %}
+                                <span class="badge bg-primary">{{ sport.nom }}</span>
+                                {% endfor %}
+                            </td>
+                            <td>{{ coach.telephone }}</td>
+                            <td>
+                                <span class="badge bg-success">Disponible</span>
+                            </td>
+                            <td>
+                                <a href="{% url 'coachs:supprimer_coach' coach.id %}" 
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce coach ?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">Aucun coach trouvé</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

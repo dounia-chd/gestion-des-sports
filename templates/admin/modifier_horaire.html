@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Modifier l'horaire{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Modifier l'horaire</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="sport" class="form-label">Sport</label>
+                            <select class="form-select" id="sport" name="sport" required>
+                                <option value="">Sélectionnez un sport</option>
+                                {% for sport in sports %}
+                                <option value="{{ sport.id }}" {% if sport.id == horaire.sport.id %}selected{% endif %}>
+                                    {{ sport.nom }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="salle" class="form-label">Salle</label>
+                            <select class="form-select" id="salle" name="salle" required>
+                                <option value="">Sélectionnez une salle</option>
+                                {% for salle in salles %}
+                                <option value="{{ salle.id }}" {% if salle.id == horaire.salle.id %}selected{% endif %}>
+                                    {{ salle.nom }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="jour" class="form-label">Jour</label>
+                            <select class="form-select" id="jour" name="jour" required>
+                                <option value="">Sélectionnez un jour</option>
+                                <option value="LUNDI" {% if horaire.jour == 'LUNDI' %}selected{% endif %}>Lundi</option>
+                                <option value="MARDI" {% if horaire.jour == 'MARDI' %}selected{% endif %}>Mardi</option>
+                                <option value="MERCREDI" {% if horaire.jour == 'MERCREDI' %}selected{% endif %}>Mercredi</option>
+                                <option value="JEUDI" {% if horaire.jour == 'JEUDI' %}selected{% endif %}>Jeudi</option>
+                                <option value="VENDREDI" {% if horaire.jour == 'VENDREDI' %}selected{% endif %}>Vendredi</option>
+                                <option value="SAMEDI" {% if horaire.jour == 'SAMEDI' %}selected{% endif %}>Samedi</option>
+                                <option value="DIMANCHE" {% if horaire.jour == 'DIMANCHE' %}selected{% endif %}>Dimanche</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="heure_debut" class="form-label">Heure de début</label>
+                            <input type="time" class="form-control" id="heure_debut" name="heure_debut" value="{{ horaire.heure_debut|time:'H:i' }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="heure_fin" class="form-label">Heure de fin</label>
+                            <input type="time" class="form-control" id="heure_fin" name="heure_fin" value="{{ horaire.heure_fin|time:'H:i' }}" required>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+                            <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Annuler</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

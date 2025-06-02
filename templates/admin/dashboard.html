@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tableau de Bord Administrateur{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- En-tête avec statistiques -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Total Membres</h6>
+                            <h2 class="mt-2 mb-0">{{ total_membres }}</h2>
+                        </div>
+                        <i class="fas fa-users fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Activités Actives</h6>
+                            <h2 class="mt-2 mb-0">{{ activites_actives }}</h2>
+                        </div>
+                        <i class="fas fa-dumbbell fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Séances Aujourd'hui</h6>
+                            <h2 class="mt-2 mb-0">{{ seances_aujourdhui }}</h2>
+                        </div>
+                        <i class="fas fa-calendar-day fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Revenus du Mois</h6>
+                            <h2 class="mt-2 mb-0">{{ revenus_mois }} €</h2>
+                        </div>
+                        <i class="fas fa-euro-sign fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Activités récentes -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Activités Récentes</h5>
+                    <a href="{% url 'activites:liste_activites' %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus me-2"></i>Nouvelle activité
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Activité</th>
+                                    <th>Niveau</th>
+                                    <th>Capacité</th>
+                                    <th>Prix</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sport in sports %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if sport.image %}
+                                            <img src="{{ sport.image.url }}" alt="{{ sport.nom }}" 
+                                                 class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                            {% else %}
+                                            <div class="rounded bg-light d-flex align-items-center justify-content-center me-2" 
+                                                 style="width: 40px; height: 40px;">
+                                                <i class="fas fa-dumbbell text-muted"></i>
+                                            </div>
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="mb-0">{{ sport.nom }}</h6>
+                                                <small class="text-muted">{{ sport.description|truncatechars:30 }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ sport.niveau_requis.nom }}</td>
+                                    <td>{{ sport.capacite_max }}</td>
+                                    <td>{{ sport.prix }} €</td>
+                                    <td>
+                                        <span class="badge {% if sport.actif %}bg-success{% else %}bg-danger{% endif %}">
+                                            {% if sport.actif %}Active{% else %}Inactive{% endif %}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{% url 'activites:detail_activite' sport.id %}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{% url 'activites:modifier_activite' sport.id %}" 
+                                               class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'activites:supprimer_activite' sport.id %}" 
+                                               class="btn btn-sm btn-outline-danger"
+                                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette activité ?')">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <i class="fas fa-info-circle fa-3x text-muted mb-3"></i>
+                                        <p class="mb-0">Aucune activité disponible.</p>
+                                        <a href="{% url 'activites:liste_activites' %}" class="btn btn-primary mt-3">
+                                            <i class="fas fa-plus me-2"></i>Créer une activité
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Séances à venir -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Séances à venir</h5>
+                </div>
+                <div class="card-body">
+                    {% if seances %}
+                    <div class="list-group">
+                        {% for seance in seances %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ seance.sport.nom }}</h6>
+                                <small>{{ seance.date|date:"d/m/Y" }}</small>
+                            </div>
+                            <p class="mb-1">
+                                <i class="fas fa-clock me-1"></i>{{ seance.heure_debut|time:"H:i" }} - {{ seance.heure_fin|time:"H:i" }}<br>
+                                <i class="fas fa-user me-1"></i>{{ seance.instructeur.get_full_name }}<br>
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ seance.salle.nom }}
+                            </p>
+                            <small class="text-muted">
+                                Places disponibles : {{ seance.places_disponibles }}/{{ seance.sport.capacite_max }}
+                            </small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
+                        <p class="mb-0">Aucune séance planifiée.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    padding: 1rem 1.25rem;
+}
+
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    padding: 1rem;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+}
+
+.badge {
+    padding: 0.5em 0.75em;
+}
+
+.btn-group .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+.btn-group .btn i {
+    font-size: 0.875rem;
+}
+</style>
+{% endblock %} 
